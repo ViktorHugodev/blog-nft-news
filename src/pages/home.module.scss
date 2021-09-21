@@ -1,1 +1,53 @@
-// TODO
+.posts {
+  padding: 2rem;
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--heading);
+  }
+
+  p {
+    color: var(--body);
+    font-size: 1.1rem;
+  }
+  > a {
+    display: block;
+  }
+  a + a {
+    margin-top: 2rem;
+  }
+
+  button {
+    border: none;
+    background: transparent;
+    color: var(--highlight);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 4rem;
+  }
+}
+
+.autor {
+  display: flex;
+  align-items: center;
+  justify-content: initial;
+  font-weight: 400;
+  color: var(--info);
+  margin-top: 1.25rem;
+  time {
+    display: flex;
+    align-items: center;
+    margin-right: 4rem;
+    font-size: 0.9rem;
+    padding: 10px;
+    letter-spacing: 0.02rem;
+  }
+  span {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    padding: 10px;
+    letter-spacing: 0.02rem;
+  }
+}
