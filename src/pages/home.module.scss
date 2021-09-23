@@ -25,6 +25,10 @@
     font-weight: 600;
     font-size: 1rem;
     margin-top: 4rem;
+    margin-bottom: 4rem;
+    &:hover {
+      filter: brightness(0.8);
+    }
   }
 }
 
@@ -49,5 +53,26 @@
     font-size: 0.9rem;
     padding: 10px;
     letter-spacing: 0.02rem;
+  }
+}
+
+.buttonExit {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  text-align: center;
+  background: var(--heading);
+  color: var(--background);
+  width: 100%;
+  font-weight: bold;
+  height: 58px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  a {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }

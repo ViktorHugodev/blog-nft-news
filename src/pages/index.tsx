@@ -12,6 +12,7 @@ import styles from './home.module.scss';
 import Prismic from '@prismicio/client';
 import React, { useState } from 'react';
 
+
 interface Post {
   uid?: string;
   first_publication_date: string | null;
@@ -23,15 +24,16 @@ interface Post {
 }
 
 interface PostPagination {
-  next_page: string;
+  next_page: string 
   results: Post[];
 }
 
 interface HomeProps {
-  postsPagination: PostPagination;
+  postsPagination: PostPagination
+  preview: boolean  
 }
 
-export default function Home({postsPagination}: HomeProps): JSX.Element {
+export default function Home({postsPagination, preview }: HomeProps){
   const formattedDate = postsPagination.results.map(post => {
     return {
       ...post,
@@ -82,7 +84,6 @@ export default function Home({postsPagination}: HomeProps): JSX.Element {
   
   return (
     <>
-
       <Head>
         <title>Início | Axie news</title>
       </Head>
@@ -104,28 +105,39 @@ export default function Home({postsPagination}: HomeProps): JSX.Element {
             </a>
           </Link>
          ))}
-          
-          
+      
           {nextPage && (
             <button 
             onClick={handleNextPage}
             type="button">Carregar mais posts</button>
           )}
         </div>
+        {preview && (
+			  <aside className={styles.buttonExit}>
+          <Link href="/api/exit-preview">
+            <a>Sair do modo Preview</a>
+          </Link>
+        </aside>
+      )}
       </main>
     </>
   );
 }
 
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+export const getStaticProps: GetStaticProps<HomeProps> = async ({
+  preview = false,
+  previewData
+}) => {
   const prismic = getPrismicClient();
 
   const postsResponse = await prismic.query(
     [Prismic.predicates.at('document.type', 'posts')],
     {
-
       pageSize: 1,
-    }
+      ref: previewData?.ref ?? null
+
+    },
+    
   );
 
   const posts = postsResponse.results.map(post => {
@@ -145,9 +157,12 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
     next_page: postsResponse.next_page,
     results: posts
   }
+  
   return {
     props: {
-      postsPagination
+      postsPagination,
+      preview
+
     },
   };
 };

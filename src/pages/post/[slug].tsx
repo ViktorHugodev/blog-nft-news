@@ -11,9 +11,11 @@ import styles from './post.module.scss';
 import { RichText } from 'prismic-dom';
 import Prismic from "@prismicio/client"
 import { useRouter } from 'next/router';
-
+import Comments from '../../components/Comments';
+import Link from 'next/link'
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null
   data: {
     title: string;
     subtitle: string
@@ -32,9 +34,10 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  preview: boolean;
 }
 
-export default function Post({post}: PostProps){
+export default function Post({post, preview}: PostProps): JSX.Element{
   // const totalWords = post.data.content.reduce((total, item) => {
   //   total += item.heading.split(' ').length
     
@@ -95,7 +98,15 @@ export default function Post({post}: PostProps){
             </article>
           )
         })}
-      </main>
+        <Comments/>
+      {preview && (
+			<aside className={styles.buttonExit}>
+				<Link href="/api/exit-preview">
+			    <a>Sair do modo Preview</a>
+				</Link>
+      </aside>
+      )}
+      </main> 
     </>
   )
 }
@@ -104,6 +115,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const prismic = getPrismicClient();
   const posts = await prismic.query([
     Prismic.predicates.at('document.type', 'posts')
+    
   ]);
   
   const paths = posts.results.map(post => {
@@ -114,20 +126,28 @@ export const getStaticPaths: GetStaticPaths = async () => {
     }
   })
   
+  
   return {
     paths,
     fallback: true,
   }
 };
 
-export const getStaticProps: GetStaticProps = async context => {
-  const {slug} = context.params
-  const prismic = getPrismicClient();
-  const response = await prismic.getByUID('posts', String(slug), {});
+export const getStaticProps: GetStaticProps = async({ 
+  params,
+  preview = false,
+  previewData
   
+}) => {
+  const {slug} = params
+  const prismic = getPrismicClient();
+  const response = await prismic.getByUID('posts', String(slug), {
+    ref: previewData?.ref ?? null
+  });
 
   const post = {
     uid: response.uid,
+    last_publication_date: response.last_publication_date,
     first_publication_date: response.first_publication_date,
     data: {
       title: response.data.title,
@@ -147,7 +167,8 @@ export const getStaticProps: GetStaticProps = async context => {
   
   return {
     props: {
-      post
+      post,
+      preview
     }
   }
 }

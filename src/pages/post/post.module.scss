@@ -23,16 +23,18 @@
 
 .text {
   h2 {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 
   h3 {
     font-size: 1rem;
     font-weight: normal;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
     color: var(--info);
   }
-
+  strong {
+    margin-bottom: 1rem;
+  }
   p {
     font-weight: normal;
     color: var(--info);
@@ -62,5 +64,26 @@
     list-style-type: none;
     line-height: 1.4;
     color: var(--info);
+  }
+}
+
+.buttonExit {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  text-align: center;
+  background: var(--heading);
+  color: var(--background);
+  width: 100%;
+  font-weight: bold;
+  height: 58px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  a {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
