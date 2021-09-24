@@ -46,7 +46,7 @@
 .article {
   .mainTitle {
     color: var(--heading);
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
   p {
     font-size: 1rem;
@@ -65,6 +65,8 @@
     line-height: 1.4;
     color: var(--info);
   }
+
+  border-bottom: 1px solid rgba(44, 44, 44, 0.8);
 }
 
 .buttonExit {
@@ -85,5 +87,33 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+}
+.navigationBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    font-size: 1.2rem;
+    color: var(--heading);
+    font-weight: normal;
+    margin-bottom: 0.5rem;
+  }
+  a {
+    color: var(--highlight);
+    font-weight: bold;
+    &:hover {
+      filter: brightness(0.8);
+    }
+  }
+
+  div {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  div + div {
+    text-align: right;
   }
 }

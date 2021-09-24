@@ -33,11 +33,24 @@ interface Post {
 }
 
 interface PostProps {
+  nextPost: {
+    uid: string;
+    data: {
+      title:string
+    }
+  }[]
+  prevPost: {
+    uid: string;
+    data: {
+      title:string
+    }
+  }[]
   post: Post;
   preview: boolean;
+
 }
 
-export default function Post({post, preview}: PostProps): JSX.Element{
+export default function Post({post, preview, prevPost, nextPost}: PostProps): JSX.Element{
   // const totalWords = post.data.content.reduce((total, item) => {
   //   total += item.heading.split(' ').length
     
@@ -98,6 +111,28 @@ export default function Post({post, preview}: PostProps): JSX.Element{
             </article>
           )
         })}
+        <div className={styles.navigationBox}>
+          
+          {prevPost[0]?.uid && (<div className={styles.prevBox}>
+            <h3>{prevPost[0]?.data.title.slice(0, 30)}</h3>
+            <Link href={`${prevPost[0]?.uid}`}>
+              <a>
+                Post anterior
+              </a>
+            </Link>
+          </div>)}
+          
+          {nextPost[0]?.uid && (<div className={styles.nextBox}>
+            <h3>{nextPost[0]?.data.title}</h3>
+            <Link href={`${nextPost[0]?.uid}`}>
+              <a className={styles.aLeft}>
+                Próximo post
+              </a>
+            </Link>
+          </div>)}
+          
+          
+        </div>
         <Comments/>
       {preview && (
 			<aside className={styles.buttonExit}>
@@ -137,14 +172,33 @@ export const getStaticProps: GetStaticProps = async({
   params,
   preview = false,
   previewData
-  
 }) => {
   const {slug} = params
   const prismic = getPrismicClient();
   const response = await prismic.getByUID('posts', String(slug), {
-    ref: previewData?.ref ?? null
+    ref: previewData?.ref ?? null,
+    
   });
-
+  
+  const prevPost = await prismic.query(
+    [Prismic.Predicates.at('document.type', 'posts')],
+    {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.first_publication_date]',
+    }
+  );
+  
+  const nextPost = await prismic.query(
+    [Prismic.Predicates.at('document.type', 'posts')],
+    {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.last_publication_date desc]',
+    }
+  )
+  
+  
   const post = {
     uid: response.uid,
     last_publication_date: response.last_publication_date,
@@ -164,11 +218,13 @@ export const getStaticProps: GetStaticProps = async({
       })
     },
   }
-  
+  console.log(prevPost)
   return {
     props: {
       post,
-      preview
+      preview,
+      nextPost: nextPost?.results,
+      prevPost: prevPost?.results,
     }
   }
 }
