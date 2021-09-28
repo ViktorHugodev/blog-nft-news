@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 import Comments from '../../components/Comments';
 import Link from 'next/link'
 interface Post {
-  first_publication_date: string | null;
+  first_publication_date: string | null
   last_publication_date: string | null
   data: {
     title: string;
@@ -65,6 +65,19 @@ export default function Post({post, preview, prevPost, nextPost}: PostProps): JS
     return <h1>Carregando...</h1>
   }
   
+  const isPostEdited = post.first_publication_date !== post.last_publication_date
+  
+  let editedDate
+  if(isPostEdited) {
+    editedDate = format(
+      new Date(post.last_publication_date),
+      "'* editado em' dd MMM yyyy', às' H':'m",
+      {
+        locale: ptBR
+      }
+    )
+  }
+  
   return (
     <>
     
@@ -98,6 +111,7 @@ export default function Post({post, preview, prevPost, nextPost}: PostProps): JS
             {`4 min`}
           </span>
           
+        {isPostEdited && <span>{editedDate}</span>}
         </div>
         <h3>{post.data.subtitle}</h3>
         
@@ -218,7 +232,6 @@ export const getStaticProps: GetStaticProps = async({
       })
     },
   }
-  console.log(prevPost)
   return {
     props: {
       post,
